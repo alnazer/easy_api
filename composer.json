@@ -1,0 +1,28 @@
+{
+    "name": "alnazer/easyapi",
+    "description": "easy generate restfull api",
+    "type": "library",
+    "license": "mtn",
+    "autoload": {
+        "psr-4": {
+            "Alnazer\\Easyapi\\": "src/",
+            "app\\": "app/"
+        },
+        "files": ["src/helpers/global.php"]
+    },
+    "authors": [
+        {
+            "name": "alnazer",
+            "email": "hassanaliksa@gmail.com"
+        }
+    ],
+    "require": {
+        "php" : ">=7.4",
+        "ext-json": "*",
+      "ext-apache": "*",
+      "ext-simplexml": "*",
+        "ext-mysql": "*",
+      "ext-libxml": "*",
+        "ext-pdo": "*"
+    }
+}
