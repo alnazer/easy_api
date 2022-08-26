@@ -8,16 +8,16 @@
     
     abstract class Model extends Connection
     {
-        public $query = "";
-        public $select = "";
-        public $where = "";
-        public $order = "";
-        public $limit = "";
-        public $from = "";
-        protected $tablename;
-        public $execute = [];
+        public string $query = "";
+        public string $select = "";
+        public string $where = "";
+        public string $order = "";
+        public string $limit = "";
+        public string $from = "";
+        protected string $tableName;
+        public array $execute = [];
         public $prepare;
-        private $queryItemList = [
+        private array $queryItemList = [
             "select",
             "from",
             "where",
@@ -29,14 +29,14 @@
         
         public function __construct()
         {
-            $this->from = "FROM " . $this->getTablename() . " ";
-            $this->query = "SELECT * FROM `" . $this->getTablename() . "` LIMIT 10";
+            $this->from = "FROM " . $this->getTableName() . " ";
+            $this->query = "SELECT * FROM `" . $this->getTableName() . "` LIMIT 10";
         }
         
         /**
          * @return string
          */
-        public function getTablename(): string
+        public function getTableName(): string
         {
             $class = is_object($this) ? get_class($this) : $this;
             $name = basename(str_replace('\\', '/', $class));
@@ -54,8 +54,12 @@
         {
             return $id;
         }
-        
-        public function _select($query = "")
+
+        /**
+         * @param string $query
+         * @return $this
+         */
+        public function _select(string $query = "")
         {
             if (empty($this->select)) {
                 $this->select .= "SELECT";
@@ -111,7 +115,7 @@
         public function _from($table = null)
         {
             if (empty($table)) {
-                $table = $this->getTablename();
+                $table = $this->getTableName();
             }
             $this->order = " FROM $table";
             return $this;

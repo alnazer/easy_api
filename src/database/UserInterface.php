@@ -19,5 +19,18 @@ namespace Alnazer\Easyapi\database;
 
 interface UserInterface
 {
+    /**
+     * @return mixed
+     */
+
+    public static function findIdentityByAccessToken($token = null);
+
+    public static function findIdentityByUsernamePassword($username, $password);
+
+    public static function hashPassword($password);
+
+    public static function login($username, $password);
+
+    public static function usernameFiled();
 
 }

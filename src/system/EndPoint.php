@@ -12,6 +12,8 @@
     {
         public static $routes;
         public Request $request;
+        public  $controller;
+        public  $action;
         public function __construct()
         {
             parent::__construct();
@@ -96,7 +98,7 @@
                     }
                         break;
                 }
-           
+
                 $this->handelController($currency_route);
             
             }else{
@@ -106,11 +108,15 @@
     
         public function handelController($currency_route)
         {
-            $classController= new Controller();
+            $classController = new Controller();
             $_controller = $currency_route["callback"][0];
-            $action = $currency_route["callback"][1] ?? "index";
+            $classController->action = $currency_route["callback"][1] ?? "index";
+            $classController->controller = $_controller;
+            $this->action = $currency_route["callback"][1] ?? "index";
+            $this->controller = $_controller;
+            $this->setRouteDataToApplication();
             $controller = "$this->namespace\\Controller\\$_controller";
-            $classController->callAction($this->namespace,$controller,$action);
+            $classController->callAction($this->namespace,$controller,$this->action);
            
         }
         
@@ -155,12 +161,26 @@
  
             return $callback;
         }
+        private function formatControllerName($name): string
+        {
+            return strtolower(str_replace("Controller","",$name));
+        }
+
+        private function setRouteDataToApplication()
+        {
+            Application::$app->controller = $this->formatControllerName($this->controller);
+            Application::$app->action = strtolower($this->action);
+            Application::$app->request->controller = Application::$app->controller;
+            Application::$app->request->action = Application::$app->action;
+        }
         public static function __callStatic($method, $arguments)
         {
             // TODO: Implement __callStatic() method.
            return (new self)->$method(...$arguments);
           
         }
-    
-        
+
+
+
+
     }

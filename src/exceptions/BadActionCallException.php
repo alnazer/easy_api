@@ -12,6 +12,6 @@
          */
         public function __construct($message = "Action Not Allowed", $code = 403, $previous = null)
         {
-            parent::__construct( $message, $code, $previous);
+            parent::__construct( $message,(int) $code, $previous);
         }
     }

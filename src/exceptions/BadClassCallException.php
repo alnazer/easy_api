@@ -12,6 +12,6 @@
          */
         public function __construct($message = "Class Not found", $code = 403, $previous = null)
         {
-            parent::__construct( $message, $code, $previous);
+            parent::__construct( $message, (int) $code, $previous);
         }
     }

@@ -17,7 +17,12 @@
 
 namespace Alnazer\Easyapi\exceptions;
 
-class LoginUsernamePasswordException
-{
+use Throwable;
 
+class LoginUsernamePasswordException extends AuthenticationException
+{
+    public function __construct($message = "Login failed error username or password", $code = 401, Throwable $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
 }

@@ -8,6 +8,8 @@
     class Request
     {
         public $request_method;
+        public  $controller;
+        public  $action;
         /**
          * @var array|mixed
          */
@@ -95,7 +97,7 @@
         }
         public function getHeaders()
         {
-            return apache_request_headers();
+            return apache_request_headers();;
         }
         public function getHeader($name)
         {
@@ -105,6 +107,5 @@
             }
             return null;
         }
-    
- 
+
     }

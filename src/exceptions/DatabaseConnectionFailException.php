@@ -4,11 +4,11 @@
     
     use Throwable;
 
-    class DatabaseConnectionFailException extends \Exception
+    class DatabaseConnectionFailException extends \PDOException
     {
      
-        public function __construct($message = "", $code = 0, Throwable $previous = null)
+        public function __construct($message = "database connection fail", $code = 0, Throwable $previous = null)
         {
-            parent::__construct($message, $code, $previous);
+            parent::__construct($message, (int) $code, $previous);
         }
     }

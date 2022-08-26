@@ -4,17 +4,20 @@
     
     use Alnazer\Easyapi\database\Connection;
     use Alnazer\Easyapi\exceptions\BadRequestException;
+    use http\Exception\RuntimeException;
 
     class Application extends Configuration
     {
-       
-      
+
+        public  $controller;
+        public  $action;
         public $mainRoute = "";
         public $config;
         public Request $request;
         public Response $response;
         public Security $security;
         public  $db;
+        public $user;
         public static Application $app;
         public function __construct(){
             
@@ -26,6 +29,7 @@
             $this->request = new Request();
             $this->response = new Response();
             $this->security = new Security();
+            $this->user = "";
         }
         public function init(array $config)
         {
@@ -53,13 +57,14 @@
                 $endpoint = new EndPoint();
                 $endpoint->setConfig($this->config);
                 $endpoint->callEndPoint();
-            }catch(\Exception $e){
+            }catch(\Exception|\PDOException|\RuntimeException|\ParseError|\ErrorException|\TypeError $e){
                 $this->response->setCode($e->getCode());
-                echo $this->response->returnResponse([
+                echo response()->returnResponse([
                     "code" => $e->getCode(),
                     "message" => $e->getMessage(),
                 ]);
             }
+
         }
     
        

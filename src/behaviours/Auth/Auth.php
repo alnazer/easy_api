@@ -19,11 +19,11 @@ namespace Alnazer\Easyapi\behaviours\Auth;
 
 use Alnazer\Easyapi\System\Application;
 
-class Authentications
+class Auth implements  AuthInterface
 {
     public array $methods = [BearerAuth::class];
     public array $execute = ["login", "register","forget_password"];
-    
+
     public function execute()
     {
         if(in_array(Application::$app->action,$this->execute)){

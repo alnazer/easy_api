@@ -23,6 +23,7 @@
       "ext-simplexml": "*",
         "ext-mysql": "*",
       "ext-libxml": "*",
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+      "ext-mbstring": "*"
     }
 }

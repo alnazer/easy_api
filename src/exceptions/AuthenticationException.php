@@ -6,18 +6,16 @@
  * @filename   :AuthenticationException.php
  **/
 
-/*
-|--------------------------------------------------------------------------
-| Class title
-|--------------------------------------------------------------------------
-|
-| Description Here
-|
-*/
 
 namespace Alnazer\Easyapi\exceptions;
 
-class AuthenticationException
-{
+use RuntimeException;
+use Throwable;
 
+class AuthenticationException extends RuntimeException
+{
+    public function __construct($message = "Authentication failed", $code = 401, Throwable $previous = null)
+    {
+        parent::__construct($message,(int) $code, $previous);
+    }
 }
