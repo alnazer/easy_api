@@ -63,7 +63,7 @@
         {
 
             if (empty($this->select)) {
-                $this->select .= " SELECT ";
+                $this->select .= "SELECT ";
             }
             if (empty($query)) {
                 $this->select .= " * ";
@@ -84,29 +84,53 @@
         
         public function _where($condations = [])
         {
-            
             if (count($condations) > 0) {
-
                 foreach ($condations as $column => $condation) {
                     $this->setWhere($column, $condation);
                 }
             }
-            
             return $this;
         }
-        
+        public function _whereIn($column,$value)
+        {
+
+            if (count($value) > 0) {
+               $this->_where([$column => $value]);
+            }
+            return $this;
+        }
+        private function setConditionArray($column, $condition){
+            $symbol = " = ";
+            if(is_array($condition) && count($condition) > 0){
+                $condition = array_map("trim",$condition);
+                $column  = str_repeat('?,', count($condition) - 1) . '?';
+                $symbol = " IN ";
+            }
+            return ["column"=> $column, "symbol"=> $symbol, "condition" => $condition];
+        }
         private function setWhere($column, $condition)
         {
-            $this->execute[trim($column)] = $condition;
+            $this->execute[trim($column)] = $this->setConditionArray(trim($column), $condition);
         }
         protected function formatWhere(){
             if(count($this->execute) > 0){
                 $this->where .= " WHERE ";
             }
+
             foreach ($this->execute as $column => $item) {
-                $this->where .= "`$column` = :$column AND ";
+
+                if(trim($item['symbol']) === "IN"){
+
+                    $this->where .= "`$column`".$item['symbol']." (".join(",",$item["condition"]).") AND ";
+                    unset($this->execute[$column]);
+                }else{
+                    $this->where .= "`$column`".$item['symbol'].":".$item['column']." AND ";
+                    $this->execute[$column] = $item["condition"];
+                }
+
             }
             $this->where = rtrim($this->where, "AND ");
+
         }
         public function _order($column = null, $sort = "ASC")
         {
@@ -154,6 +178,7 @@
         
         private function excute($query = null)
         {
+
             $query = (!$query) ? $this->query()->query : $query;
             $this->prepare = Application::$app->db->prepare($query);
             $this->prepare->execute($this->execute);
@@ -202,6 +227,7 @@
         {
             
             try {
+
                 $rows = $this->excute()->prepare->fetchAll();
                 if ($rows) {
                     return $rows;
@@ -284,15 +310,14 @@
         public function __call($name, $arguments)
         {
             // TODO: Implement __call() method.
-            $name = "_" . $name;
-            return $this->$name(...$arguments);
+            $name = "_".$name;
+            return call_user_func_array([$this,$name],$arguments);
         }
         
         public static function __callStatic($name, $arguments)
         {
             // TODO: Implement __callStatic() method.
             $name = "_" . $name;
-            return (new static)->$name(...$arguments);
-            
+            return call_user_func_array([new static,$name],$arguments);
         }
     }

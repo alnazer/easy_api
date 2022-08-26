@@ -46,6 +46,7 @@
                 $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
                 $this->db->setAttribute(PDO::MYSQL_ATTR_FOUND_ROWS ,true);
                 $this->db->setAttribute( PDO::ATTR_EMULATE_PREPARES, false );
+
                 if(!empty($db_encode)){
                     $this->db->setAttribute( PDO::MYSQL_ATTR_INIT_COMMAND, "SET NAMES $db_encode" );
                 }

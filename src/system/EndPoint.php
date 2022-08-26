@@ -98,7 +98,6 @@
                     }
                         break;
                 }
-
                 $this->handelController($currency_route);
             
             }else{
@@ -121,10 +120,11 @@
         }
         
         public function get_is_endpoint_available(){
-            
             if(self::$routes){
                 foreach (self::$routes as $key => $value){
-                    $actions = array_map(function ($item){ return ltrim($item, "/"); },array_keys($value));
+                    $actions = array_map(function ($item){ return trim($item, "/"); },array_keys($value));
+                    $this->mainRoute = trim($this->mainRoute, "/");
+
                     if(in_array($this->mainRoute,$actions)){
                         $callback = $value[$this->mainRoute];
                         $callback = $this->prepare_callback($callback);
@@ -149,7 +149,7 @@
             if(is_array($path) && count($path) > 0){
                 return join("/",$path);
             }elseif (is_string($path)){
-                return ltrim($path,"/");
+                return trim($path,"/");
             }
             return false;
         }

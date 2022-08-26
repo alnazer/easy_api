@@ -19,12 +19,15 @@
             return $action;
         }
         public function callAction($namespace,$controller,$action){
+
             $ex = explode("\\",$controller);
             $_controller = end($ex);
-            
+
             if(class_exists($controller)){
+
                 $controller = new $controller();
                 if(method_exists($controller,$action) ){
+
                     if(is_callable([$controller,$action])){
                         $controller->controller = $_controller;
                         $controller->action = $action;

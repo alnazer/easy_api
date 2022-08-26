@@ -22,10 +22,11 @@
         public function __construct(){
             
             $this->mainRoute = str_replace($_SERVER["SCRIPT_NAME"]."/","",$_SERVER['PHP_SELF']);
+
             if($this->mainRoute === $_SERVER["SCRIPT_NAME"]){
                 $this->mainRoute = "/";
             }
-         
+
             $this->request = new Request();
             $this->response = new Response();
             $this->security = new Security();
