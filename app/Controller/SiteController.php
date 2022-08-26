@@ -25,11 +25,13 @@
         }
 
         public function index(){
-            //User::insert(["username"=>"admin","password"=>sha1(rand(1,20)),"access_token"=>sha1("aafafsfa")]);
-           /*return [
-               "query"=>User::select("*")->where(["username"=> "admin","email"=> "hassanaliksa@gmail.com"])->all(),
-               "queryCount"=>User::select("*")->where(["username"=> "admin","email"=> "hassanaliksa@gmail.com"])->count(),
-               "all"=>User::all(),
+
+           return [
+               "all_selec"=>User::select("id , username , id")->all(),
+               "all"=>User::select(["id ","username ","id "])->all(),
+               "insert" => User::insert(["username"=> "admin".rand(1,20),"email"=> "hassan".rand(1,20)."@gmail.com","password"=> sha1(time()),"access_token"=>sha1(time()*time())]),
+               "query"=>User::select("*")->where(["username"=> "admin","email"=> "hassan@gmail.com"])->all(),
+               "queryCount"=>User::select("*")->where(["username"=> "admin","email"=> "hassan@gmail.com"])->count(),
                "one"=>User::one(),
                "last"=>User::last(),
                "count"=>User::count(),
@@ -48,7 +50,7 @@
                        ]
                    ]
                ],
-           ];*/
+           ];
         }
         
         public function beforeCall($action = [])

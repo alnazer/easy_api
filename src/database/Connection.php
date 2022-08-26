@@ -25,8 +25,6 @@
          */
         public function connect()
         {
-
-
             try {
                 $this->validDatabaseDefineInfo();
                 $servername = $this->config["host"] ?? "";
@@ -36,7 +34,12 @@
                 $db_encode = $this->config["encode"] ?? "";
                 $port = $this->config["port"] ?? "";
                 $port = ($port)? "port=$port;" : "";
-                $this->db = new \PDO("mysql:host=$servername;dbname=$db_name;$port", $username, $password);
+                try {
+                    $this->db = new \PDO("mysql:host=$servername;dbname=$db_name;$port", $username, $password);
+                }catch (\PDOException $e){
+                    throw new DatabaseConnectionFailException($e->getMessage(), $e->getCode());
+                }
+
                 // set the PDO error mode to exception
                 $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);

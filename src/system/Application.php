@@ -33,12 +33,14 @@
         }
         public function init(array $config)
         {
-            self::$app = new Application();
             $this->config = $config;
+            self::$app = new Application();
+            self::$app->config = $config;
             self::$app->db = new Connection($config['db'] ?? []);
             self::$app->db = self::$app->db->connect();
             $this->handelConfig();
         }
+
         public function handelConfig()
         {
             if($this->config){
@@ -47,15 +49,14 @@
                 }
             }
         }
-       
-        
+
         public function run(array $config)
         {
-            
             try{
                 $this->init($config);
                 $endpoint = new EndPoint();
                 $endpoint->setConfig($this->config);
+                $this->beforeRun();
                 $endpoint->callEndPoint();
             }catch(\Exception|\PDOException|\RuntimeException|\ParseError|\ErrorException|\TypeError $e){
                 $this->response->setCode($e->getCode());
@@ -63,12 +64,13 @@
                     "code" => $e->getCode(),
                     "message" => $e->getMessage(),
                 ]);
+                exit();
             }
 
         }
-    
-       
-        
-    
-    
+
+        private function beforeRun()
+        {
+
+        }
     }

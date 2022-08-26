@@ -19,11 +19,11 @@
     "require": {
         "php" : ">=7.4",
         "ext-json": "*",
-      "ext-apache": "*",
-      "ext-simplexml": "*",
+        "ext-apache": "*",
+        "ext-simplexml": "*",
         "ext-mysql": "*",
-      "ext-libxml": "*",
+        "ext-libxml": "*",
         "ext-pdo": "*",
-      "ext-mbstring": "*"
+        "ext-mbstring": "*"
     }
 }

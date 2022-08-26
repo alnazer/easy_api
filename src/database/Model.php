@@ -59,18 +59,26 @@
          * @param string $query
          * @return $this
          */
-        public function _select(string $query = "")
+        public function _select($query = "")
         {
+
             if (empty($this->select)) {
-                $this->select .= "SELECT";
+                $this->select .= " SELECT ";
             }
             if (empty($query)) {
                 $this->select .= " * ";
-            } elseif (is_string($query)) {
+            }if (!empty($query) && is_string($query) && strpos(",", $query) !== false) {
+                $query = explode(",",$query);
+            }elseif(!empty($query) && is_string($query)){
                 $this->select .= " $query ";
-            } elseif (is_array($query) && count($query) > 0) {
-                $this->select .= "`" . join("`,`", $query) . "`";
             }
+            if (is_array($query) && count($query) > 0) {
+                array_filter($query);
+                $query= array_unique($query);
+                $query = array_map('trim', $query);
+                $this->select .= "`" . join("`,`", $query) . "` ";
+            }
+
             return $this;
         }
         
@@ -78,31 +86,28 @@
         {
             
             if (count($condations) > 0) {
-                if (empty($this->where)) {
-                    $this->where .= " WHERE ";
-                } else {
-                    $this->where .= " AND ";
-                }
-                $loop = 0;
+
                 foreach ($condations as $column => $condation) {
-                    $loop++;
-                    $this->setWhere($column, $condation, count($condations) === $loop);
+                    $this->setWhere($column, $condation);
                 }
             }
             
             return $this;
         }
         
-        private function setWhere($column, $condation, $islast = false)
+        private function setWhere($column, $condition)
         {
-            if ($islast) {
-                $this->where .= "`$column` = :$column ";
-            } else {
+            $this->execute[trim($column)] = $condition;
+        }
+        protected function formatWhere(){
+            if(count($this->execute) > 0){
+                $this->where .= " WHERE ";
+            }
+            foreach ($this->execute as $column => $item) {
                 $this->where .= "`$column` = :$column AND ";
             }
-            $this->execute[$column] = $condation;
+            $this->where = rtrim($this->where, "AND ");
         }
-        
         public function _order($column = null, $sort = "ASC")
         {
             if (empty($column)) {
@@ -130,6 +135,7 @@
         public function _query()
         {
             try {
+
                 foreach ($this->queryItemList as $item) {
                     if (isset($this->$item)) {
                         if (empty($this->$item)) {
@@ -137,9 +143,9 @@
                         }
                     }
                 }
-                
+                $this->formatWhere();
                 $this->query = $this->select . $this->from . $this->where . $this->order . $this->limit;
-                
+
                 return $this;
             } catch (\Exception $e) {
                 throw  new DatabaseQueryErrorException($e->getMessage(), $e->getCode());

@@ -19,7 +19,7 @@ namespace Alnazer\Easyapi\behaviours\Auth;
 
 use Alnazer\Easyapi\exceptions\AuthenticationException;
 use Alnazer\Easyapi\System\Application;
-use app\Models\User;
+
 
 class BasicAuth extends Auth
 {
@@ -29,7 +29,7 @@ class BasicAuth extends Auth
         if(parent::execute() === false){
             $token = $this->getToken();
             if($token){
-                $user = User::findIdentityByUsernamePassword($token[0],$token[1]);
+                $user = Application::$app->config["auth"]['class']::findIdentityByUsernamePassword($token[0],$token[1]);
                 if($user){
                     Application::$app->user = (object) $user;
                 }else{
