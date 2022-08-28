@@ -39,4 +39,19 @@
             $output = str_replace('/', '&#x2F;', $output);
             return stripslashes($output);
         }
+    
+        /**
+         * @throws \Exception
+         */
+        public function getRandonKey($length = 0)
+        {
+            if(is_string($length)){
+                throw new \Exception('First parameter ($length) must be an integer',30);
+            }
+            if($length <= 0 ){
+                throw new \Exception('First parameter ($length) must be greater than 0',30);
+                
+            }
+            return bin2hex(random_bytes($length));
+        }
     }

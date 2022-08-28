@@ -26,9 +26,6 @@ class Auth implements  AuthInterface
 
     public function execute()
     {
-        if(in_array(Application::$app->action,$this->execute)){
-            return true;
-        }
-        return false;
+        return in_array(Application::$app->action,$this->execute);
     }
 }

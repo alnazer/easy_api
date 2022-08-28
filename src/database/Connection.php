@@ -46,15 +46,17 @@
                 $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
                 $this->db->setAttribute(PDO::MYSQL_ATTR_FOUND_ROWS ,true);
                 $this->db->setAttribute( PDO::ATTR_EMULATE_PREPARES, false );
-
+                
                 if(!empty($db_encode)){
                     $this->db->setAttribute( PDO::MYSQL_ATTR_INIT_COMMAND, "SET NAMES $db_encode" );
                 }
                 return $this->db;
             } catch(\PDOException $e) {
                 throw new DatabaseConnectionFailException($e->getMessage(), $e->getCode());
+                return false;
             } catch (\Exception $e) {
                 throw new \Exception($e->getMessage(), $e->getCode());
+                return false;
             }
         }
 
