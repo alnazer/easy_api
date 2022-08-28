@@ -4,7 +4,6 @@
     
     use Alnazer\Easyapi\database\Model;
     use Alnazer\Easyapi\database\UserInterface;
-    use Alnazer\Easyapi\System\Application;
 
     class User extends Model implements UserInterface
     {
@@ -23,9 +22,12 @@
         public static function hashPassword($password): string
         {
             // TODO: Implement hashPassword() method.
-            return sha1($password);
+            return password_hash($password, PASSWORD_BCRYPT);
         }
-
+        public static function verifyPassword($enter_password, $currency_password)
+        {
+            return password_verify($enter_password, $currency_password);
+        }
         public static function login($username, $password)
         {
             return self::$user = self::findIdentityByUsernamePassword($username, $password);

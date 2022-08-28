@@ -18,6 +18,7 @@
         public Security $security;
         public  $db;
         public $user;
+        protected array $eventListeners = [];
         public static Application $app;
         public function __construct(){
             
@@ -26,12 +27,14 @@
             if($this->mainRoute === $_SERVER["SCRIPT_NAME"]){
                 $this->mainRoute = "/";
             }
-
             $this->request = new Request();
             $this->response = new Response();
             $this->security = new Security();
+
             $this->user = "";
+
         }
+
         public function init(array $config)
         {
             $this->config = $config;
@@ -68,6 +71,31 @@
                 exit();
             }
 
+        }
+
+        public function callEvent($eventName,...$event)
+        {
+
+            $callbacks = $this->eventListeners[$eventName] ?? [];
+
+            foreach ($callbacks as $callback) {
+                $arguments = $event ?? $callback['arguments'];
+                call_user_func_array($callback['callback'],$arguments);
+            }
+        }
+        public function  registerAllEvent(){
+
+            $events = (isset(Application::$app->config['events'])) ? Application::$app->config['events'] : [];
+            if(is_array(Application::$app->config['events']) && count(Application::$app->config['events']) > 0){
+                foreach ($events as $eventName => $event) {
+                    $this->runEventListener($eventName, [$event["class"],"run"], $event["event"]);
+                }
+            }
+        }
+        public function runEventListener($eventName, $callback, ...$arguments)
+        {
+            define($eventName,"$eventName");
+            $this->eventListeners[$eventName][] = ['callback'=> $callback,'arguments' => $arguments];
         }
 
         private function beforeRun()

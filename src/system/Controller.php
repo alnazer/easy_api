@@ -18,14 +18,15 @@
         public function afterCall($action = []){
             return $action;
         }
-        public function callAction($namespace,$controller,$action){
+        public function callAction($namespace, $controller, $action, $arguments = []){
 
             $ex = explode("\\",$controller);
+
             $_controller = end($ex);
 
             if(class_exists($controller)){
 
-                $controller = new $controller();
+                $controller = new $controller;
                 if(method_exists($controller,$action) ){
 
                     if(is_callable([$controller,$action])){
@@ -33,7 +34,9 @@
                         $controller->action = $action;
                         $controller->behaviour();
                         $controller->beforeCall(['action'=>request()->action,"controller"=>request()->controller,'namespace'=>$namespace,'route'=> (new self)->mainRoute]);
-                        $action = $controller->$action();
+                        $controller->registerAllEvent();
+                        $action = $controller->$action(...$arguments);//call_user_func_array([$controller,$action],$arguments);
+
                         $controller->afterCall(['action'=>request()->action,"controller"=>request()->controller,'namespace'=>$namespace,'route'=> (new self)->mainRoute]);
                         echo $this->response->returnResponse($action);
                         exit();
@@ -68,4 +71,5 @@
             }
             return $behaviours;
         }
+
     }

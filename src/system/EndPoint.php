@@ -107,6 +107,7 @@
     
         public function handelController($currency_route)
         {
+
             $classController = new Controller();
             $_controller = $currency_route["callback"][0];
             $classController->action = $currency_route["callback"][1] ?? "index";
@@ -115,20 +116,49 @@
             $this->controller = $_controller;
             $this->setRouteDataToApplication();
             $controller = "$this->namespace\\Controller\\$_controller";
-            $classController->callAction($this->namespace,$controller,$this->action);
-           
+            $classController->callAction($this->namespace,$controller,$this->action, $currency_route['arguments']);
+
         }
-        
+        private function format_route($item){
+
+            $_item = explode("/", $item);
+
+            $_item = array_filter($_item);
+
+            if(count($_item) == 1){
+                return join("/",$_item)."/index";
+            }
+            return join("/",$_item);
+        }
+        private function getRouteAsOffset($route, $offset = 2){
+            $route = $this->format_route($route);
+            $explode_route = explode("/" ,$route);
+            if(count($explode_route) >= $offset){
+                return $explode_route[0]."/".$explode_route[1];
+            }
+            return $route;
+        }
+        private function formatArguments($replaceWith){
+            $arguments = str_replace($replaceWith,"",$this->mainRoute);
+            $arguments = $this->security->cleanInput($arguments);
+            $arguments = str_replace("&#x2F;", "/" ,$arguments);
+            $arguments = explode("/", $arguments);
+            $arguments = array_filter($arguments);
+            return array_map(function ($argument){
+                return  $this->security->cleanInput($argument);
+            },$arguments);
+        }
         public function get_is_endpoint_available(){
+            $arguments = [];
             if(self::$routes){
                 foreach (self::$routes as $key => $value){
-                    $actions = array_map(function ($item){ return trim($item, "/"); },array_keys($value));
-                    $this->mainRoute = trim($this->mainRoute, "/");
+                    $actions = array_map(function ($item){ return trim($this->format_route($item), "/"); }, array_keys($value));
 
-                    if(in_array($this->mainRoute,$actions)){
-                        $callback = $value[$this->mainRoute];
+                    $RouteAsOffset = $this->getRouteAsOffset($this->mainRoute);
+                    if(in_array($RouteAsOffset,$actions)){
+                        $callback = $value[$this->getRouteAsOffset($this->mainRoute)];
+                        $arguments = $this->formatArguments($RouteAsOffset);
                         $callback = $this->prepare_callback($callback);
-                        
                         if(is_string($callback)  && !strpos($callback, '@')){
                             $callback = [$callback,"index"];
                         }
@@ -138,18 +168,18 @@
                         if((is_array($callback) && count($callback) >= 2 && empty($callback[1]))){
                             $callback[1] = "index";
                         }
-                        return ["method"=>$key,"route"=>$this->mainRoute,"callback" =>$callback] ;
+                        return ["method"=>$key,"route"=>$this->mainRoute,"callback" =>$callback,'arguments' => $arguments] ;
                     }
                 }
                 return false;
             }
         }
         private function prepare_path($path){
-           
+
             if(is_array($path) && count($path) > 0){
                 return join("/",$path);
             }elseif (is_string($path)){
-                return trim($path,"/");
+                return trim($this->format_route($path),"/");
             }
             return false;
         }
@@ -179,8 +209,4 @@
            return (new self)->$method(...$arguments);
           
         }
-
-
-
-
     }

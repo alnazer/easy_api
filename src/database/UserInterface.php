@@ -29,6 +29,8 @@ interface UserInterface
 
     public static function hashPassword($password);
 
+    public static function verifyPassword($enter_password, $currency_password);
+
     public static function login($username, $password);
 
     public static function usernameFiled();

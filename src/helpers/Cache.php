@@ -20,9 +20,9 @@
             if($tableExists === false){
                 $query = "CREATE TABLE IF NOT EXISTS $this->tableName(
                     id char(128)  PRIMARY KEY,
-                    data BLOB NOT NULL,
-                    expire int(11) NOT NULL,
-                    parent_id int( 11 )  NULL);";
+                    data text NOT NULL,
+                    parent_id int( 11 )  NULL,
+                    expire int(11) NOT NULL);";
                 $this->schema->createTable($this->tableName,$query);
             }
             $this->query = new Query();
@@ -32,23 +32,32 @@
         /**
          * @throws \Exception
          */
-        public function _add($data=[], $expire = 10, $parent_id = null){
+        public function _add($data=[], $expire = 600, $parent_id = null){
             if($expire){
-                pd($this->query->insert([
+                $insert = $this->query->insert([
                     'id' => security()->getRandonKey(30),
                     "data" => serialize($data),
                     "expire" => time()+$expire,
                     "parent_id" => $parent_id
-                ]));
+                ]);
+                return $insert;
             }else{
                 throw new \Exception("You must insert expire time",403);
             }
             
         }
-        public function _get($key,$parent = null){
+        public function _get($key,$parent = ""){
             if($key){
-                $get = $this->query->where(['id' => $key])->all();
-                pd($get);
+                $get = $this->query->where('id', $key);
+                if($parent){
+                    $get->where("parent_id", $parent);
+                }
+                $get->where("expire", time(), ">=");
+                $result = $get->one();
+                if($result){
+                    return unserialize($result['data']);
+                }
+                return null;
             }else{
                 throw new \Exception("You must insert key ",403);
             }

@@ -17,7 +17,8 @@
 
 namespace Alnazer\Easyapi\system;
 
-class Events
+abstract class  Events
 {
-
+    public $event;
+    abstract static public function run($event);
 }
