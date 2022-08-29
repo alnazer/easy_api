@@ -2,21 +2,26 @@
     
     namespace app\Models;
     
+    use Alnazer\Easyapi\Behaviours\RateLimit\UserRateLimitInterface;
     use Alnazer\Easyapi\Database\Model;
     use Alnazer\Easyapi\Database\UserInterface;
 
-    class User extends Model implements UserInterface
+    class User extends Model implements UserInterface,UserRateLimitInterface
     {
         public static $user;
+        
         public static function findIdentityByAccessToken($token = null)
         {
             // TODO: Implement findIdentityByAccessToken() method.
-              return self::$user = self::where(["access_token"=> $token])->one();
+             //self::$user = ;
+            self::$user = self::where(["access_token"=> $token])->one();
+            return new static(self::$user);
         }
 
         public static function findIdentityByUsernamePassword($username, $password)
         {
-            return self::where([self::usernameFiled() => $username,"password" => self::hashPassword($password)])->one();
+            self::$user = self::where([self::usernameFiled() => $username,"password" => self::hashPassword($password)])->one();
+            return new static(self::$user);
         }
 
         public static function hashPassword($password): string
@@ -30,12 +35,29 @@
         }
         public static function login($username, $password)
         {
-            return self::$user = self::findIdentityByUsernamePassword($username, $password);
+            self::$user = self::findIdentityByUsernamePassword($username, $password);
+            return new static(self::$user);
         }
 
         public static function usernameFiled(): string
         {
             return "username";
         }
-
+    
+        public function requestCount(): int
+        {
+            // TODO: Implement requestCount() method.
+            return 10;
+        }
+    
+        public function everySecond(): int
+        {
+            // TODO: Implement perSecond() method.
+            return 10;
+        }
+    
+        public function user()
+        {
+            return (object) self::$user;
+        }
     }

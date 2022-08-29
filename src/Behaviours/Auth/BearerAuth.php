@@ -30,7 +30,7 @@ class BearerAuth extends AuthBehaviour
             if($this->getToken()){
                 $user = Application::$app->config["auth"]['class']::findIdentityByAccessToken($this->getToken());
                 if($user){
-                    Application::$app->user = (object) $user;
+                    Application::$app->auth = $user;
                 }else{
                     throw  new AuthenticationException();
                 }

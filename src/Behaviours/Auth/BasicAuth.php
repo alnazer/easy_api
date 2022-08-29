@@ -31,7 +31,7 @@ class BasicAuth extends AuthBehaviour
             if($token){
                 $user = Application::$app->config["auth"]['class']::findIdentityByUsernamePassword($token[0],$token[1]);
                 if($user){
-                    Application::$app->user = (object) $user;
+                    Application::$app->auth = (object) $user;
                 }else{
                     throw  new AuthenticationException();
                 }

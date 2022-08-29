@@ -34,5 +34,7 @@ interface UserInterface
     public static function login($username, $password);
 
     public static function usernameFiled();
+    
+    public function user();
 
 }

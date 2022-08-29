@@ -17,7 +17,7 @@
         public Response $response;
         public Security $security;
         public  $db;
-        public $user;
+        public $auth;
         protected array $eventListeners = [];
         public static Application $app;
         public function __construct(){
@@ -31,7 +31,7 @@
             $this->response = new Response();
             $this->security = new Security();
 
-            $this->user = "";
+            $this->auth = "";
 
         }
 

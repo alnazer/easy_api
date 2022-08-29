@@ -9,18 +9,19 @@
 
     abstract class Model extends Connection
     {
-        public string $query = "";
-        public string $select = "";
-        public string $where = "";
-        public string $order = "";
-        public string $limit = "";
-        public string $from = "";
+        protected string $query = "";
+        protected string $select = "";
+        protected string $where = "";
+        protected string $order = "";
+        protected string $limit = "";
+        protected string $from = "";
         public string $tableName;
-        public array $execute = [];
-        public $prepare;
+        protected array $execute = [];
+        protected $prepare;
         private array $queryItemList = [
             "select",
             "from",
+            'table',
             "where",
             "join",
             "order",
@@ -37,11 +38,12 @@
             "!=",
             "like",
         ];
-
+        
+    
         /**
          * @return string
          */
-        public function gettableName(): string
+        public function getTableName(): string
         {
             $class = is_object($this) ? get_class($this) : $this;
             $name = basename(str_replace('\\', '/', $class));
@@ -59,7 +61,7 @@
         {
             return $id;
         }
-
+        
         /**
          * @param string $query
          * @return $this
@@ -86,7 +88,10 @@
 
             return $this;
         }
-        
+        public function _table($table){
+            $this->tableName = $table;
+            return $this;
+        }
         public function _where($firstValue = "", $mark = "=", $sendValue = "")
         {
 
@@ -163,7 +168,7 @@
         public function _from($table = null)
         {
             if (empty($table)) {
-                $table = $this->gettableName();
+                $table = $this->getTableName();
             }
             $this->from = " FROM $table";
             return $this;
@@ -277,7 +282,9 @@
 
         public function _insert($data)
         {
+            
             try {
+            
                 $this->execute = [];
                 $array_key = array_keys($data);
                 $coulmes = join("`,`", $array_key);
@@ -285,7 +292,8 @@
                 foreach ($data as $key => $value) {
                     $this->execute[$key] = $value;
                 }
-                $query = "INSERT INTO `$this->tableName` (`$coulmes`) VALUES (:$values)";
+                
+                $query = "INSERT INTO `{$this->getTableName()}` (`$coulmes`) VALUES (:$values)";
                 $this->excute($query);
                 return true;
             } catch (\PDOException  $e) {
@@ -306,7 +314,7 @@
                 if($conditions){
                     $this->where($conditions);
                 }
-                $sql = "UPDATE `$this->tableName` $SET ".$this->where;
+                $sql = "UPDATE `{$this->getTableName()}` $SET ".$this->where;
                 $this->execute = array_merge($data,$conditions);
                 return $this->excute($sql);
             } catch (\PDOException  $e) {
@@ -324,7 +332,7 @@
                     $this->_where($conditions);
                 }
                 $this->formatWhere();
-                $query = "DELETE FROM `$this->tableName` ".$this->where;
+                $query = "DELETE FROM `{$this->getTableName()}` ".$this->where;
                 $this->excute($query);
                 return true;
             } catch (\PDOException  $e) {
@@ -342,7 +350,6 @@
 
             $query = (!$query) ? $this->query()->query : $query;
             $this->prepare = Application::$app->db->prepare($query);
-
             $this->prepare->execute($this->execute);
             return $this;
         }
