@@ -7,7 +7,7 @@
  **/
 return [
     "AFTER_INSERT" => [
-        "class" => app\Event\AfterInsert::class,
+        "class" => app\Events\AfterInsert::class,
         "event" => ["username"=> "sayes" ,"email"=> "sayed@gmail.com" ,"password"=> 123443,'access_token' => mt_rand(1,30)]
     ]
 ];

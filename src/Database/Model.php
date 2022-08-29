@@ -28,7 +28,7 @@
             "group",
             "limit",
         ];
-        private array $condition_marks = [
+        private array $operations_marks = [
             "=",
             ">",
             "<",
@@ -92,21 +92,21 @@
             $this->tableName = $table;
             return $this;
         }
-        public function _where($firstValue = "", $mark = "=", $sendValue = "")
+        public function _where($firstValue = "", $operation = "=", $sendValue = "")
         {
 
 
             if(is_string($firstValue) && !empty($sendValue)){
-                $this->setWhere($firstValue, $sendValue, $mark);
-            }elseif(is_string($firstValue) && empty($sendValue) && !empty($mark) && !in_array(strtolower($mark),$this->condition_marks)){
-                $this->setWhere($firstValue, $mark, "=");
+                $this->setWhere($firstValue, $sendValue, $operation);
+            }elseif(is_string($firstValue) && empty($sendValue) && !empty($operation) && !in_array(strtolower($operation),$this->operations_marks)){
+                $this->setWhere($firstValue, $operation, "=");
             }else{
                 if (is_array($firstValue) && count($firstValue) > 0) {
                     if(count($firstValue) == 3){
                         $this->setWhere($firstValue[0], $firstValue[2], $firstValue[1]);
                     }else{
                         foreach ($firstValue as $column => $condition) {
-                            $this->setWhere($column, $condition, $mark);
+                            $this->setWhere($column, $condition, $operation);
                         }
                     }
 

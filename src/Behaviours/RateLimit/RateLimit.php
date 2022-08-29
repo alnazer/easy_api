@@ -32,7 +32,7 @@ class RateLimit implements BehaviourInterface
     public int $everySecond = 5;
     public int $blockSecond = 10;
     public bool $allowDisplayInHeader = false;
-    private $blockStillWaiting = 0;
+    private int $blockStillWaiting = 0;
     
     /**
      * @throws Exception

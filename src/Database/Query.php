@@ -14,9 +14,4 @@
         {
             parent::_insert($array);
         }
-        public static function __callStatic($name, $arguments)
-        {
-            pd($name, $arguments);
-            // TODO: Implement __callStatic() method.
-        }
     }

@@ -20,6 +20,11 @@
         public $auth;
         protected array $eventListeners = [];
         public static Application $app;
+        /**
+         * @var mixed|string
+         */
+        public $security_key;
+
         public function __construct(){
             
             $this->mainRoute = str_replace($_SERVER["SCRIPT_NAME"]."/","",$_SERVER['PHP_SELF']);
@@ -35,6 +40,9 @@
 
         }
 
+        /**
+         * @throws \Exception
+         */
         public function init(array $config)
         {
             $this->config = $config;
@@ -43,6 +51,10 @@
             self::$app->db = new Connection($config['db'] ?? []);
             self::$app->db = self::$app->db->connect();
             $this->handelConfig();
+
+            if(!$this->security_key){
+                throw new \Exception('Config parameter (security_key) must be define',30);
+            }
         }
 
         public function handelConfig()
@@ -50,8 +62,10 @@
             if($this->config){
                 foreach ($this->config as $var => $value){
                     $this->$var = $value;
+                    self::$app->$var = $value;
                 }
             }
+
         }
 
         public function run(array $config)

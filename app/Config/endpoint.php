@@ -1,5 +1,7 @@
 <?php
     use Alnazer\Easyapi\System\EndPoint;
+
+    EndPoint::any("/encrypt","SiteController@encrypt");
     EndPoint::any("/register","SiteController@register");
     EndPoint::any("/asd/","SiteController@index");
     EndPoint::any(["user","index"],"UserController@index");

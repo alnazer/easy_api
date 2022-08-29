@@ -36,7 +36,7 @@
         public function _add($data=[], $expire = 600, $parent_id = null){
             if($expire){
                 $insert = $this->query->insert([
-                    'id' => security()->getRandonKey(30),
+                    'id' => security()->getRandomKey(30),
                     "data" => serialize($data),
                     "expire" => time()+$expire,
                     "parent_id" => $parent_id
