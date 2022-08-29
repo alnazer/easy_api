@@ -15,9 +15,9 @@
 |
 */
 
-namespace app\Event;
+namespace app\Events;
 
-use Alnazer\Easyapi\system\Events;
+use Alnazer\Easyapi\System\Events;
 use app\Models\User;
 
 class AfterInsert extends Events

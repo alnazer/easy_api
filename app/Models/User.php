@@ -2,8 +2,8 @@
     
     namespace app\Models;
     
-    use Alnazer\Easyapi\database\Model;
-    use Alnazer\Easyapi\database\UserInterface;
+    use Alnazer\Easyapi\Database\Model;
+    use Alnazer\Easyapi\Database\UserInterface;
 
     class User extends Model implements UserInterface
     {

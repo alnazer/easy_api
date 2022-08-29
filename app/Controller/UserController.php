@@ -1,10 +1,10 @@
 <?php
     namespace app\Controller;
-    use Alnazer\Easyapi\behaviours\Auth\MultiAuth;
-    use Alnazer\Easyapi\behaviours\Auth\BasicAuth;
-    use Alnazer\Easyapi\behaviours\Auth\BearerAuth;
-    use Alnazer\Easyapi\exceptions\AuthenticationException;
-    use Alnazer\Easyapi\exceptions\LoginUsernamePasswordException;
+    use Alnazer\Easyapi\Behaviours\Auth\MultiAuth;
+    use Alnazer\Easyapi\Behaviours\Auth\BasicAuth;
+    use Alnazer\Easyapi\Behaviours\Auth\BearerAuth;
+    use Alnazer\Easyapi\Exceptions\AuthenticationException;
+    use Alnazer\Easyapi\Exceptions\LoginUsernamePasswordException;
     use Alnazer\Easyapi\System\Application;
     use Alnazer\Easyapi\System\Controller;
     use app\Models\User;
