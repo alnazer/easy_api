@@ -21,17 +21,22 @@ use Alnazer\Easyapi\Behaviours\BehaviourInterface;
 use Alnazer\Easyapi\Database\Query;
 use Alnazer\Easyapi\Database\Schema;
 use Alnazer\Easyapi\System\Application;
+use Exception;
 
 class RateLimit implements BehaviourInterface
 {
-    public $tableName = "rate_limiting";
-    public $query;
+    public string $tableName = "rate_limiting";
+    public Query $query;
     public Schema $schema;
-    public $requestCount = 3;
-    public $everySecond = 5;
-    public $blockSecond = 10;
+    public int $requestCount = 3;
+    public int $everySecond = 5;
+    public int $blockSecond = 10;
+    public bool $allowDisplayInHeader = false;
     private $blockStillWaiting = 0;
-
+    
+    /**
+     * @throws Exception
+     */
     public function __construct()
     {
         // create table is not exist
@@ -55,7 +60,7 @@ class RateLimit implements BehaviourInterface
     }
     
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function execute()
     {
@@ -70,6 +75,9 @@ class RateLimit implements BehaviourInterface
         }
     }
     
+    /**
+     * @throws Exception
+     */
     private function stopIsRateLimiter($exist)
     {
         if (Application::$app->auth instanceof UserRateLimitInterface) {
@@ -80,7 +88,7 @@ class RateLimit implements BehaviourInterface
         if($exist['block_time'] && $exist['block_time'] > time()){
             $this->blockStillWaiting = $exist['block_time'] - time();
             $this->setHttpHeader();
-            throw new \Exception("Too Many Requests",429);
+            throw new Exception("Too Many Requests",429);
         }else{
             $this->updateRateTime(0);
         }
@@ -92,7 +100,7 @@ class RateLimit implements BehaviourInterface
                 $this->updateRateBlockTime($block_time);
             }
             $this->setHttpHeader();
-            throw new \Exception("Too Many Requests",429);
+            throw new Exception("Too Many Requests",429);
         }else{
             //attempt + 1 every time
             $attempts = $exist['attempts']+1;
@@ -130,8 +138,11 @@ class RateLimit implements BehaviourInterface
     
     private function setHttpHeader()
     {
-        Application::$app->response->setHeader("X-Rate-Limit-Limit",$this->requestCount);
-        Application::$app->response->setHeader("X-Rate-Limit-Remaining",$this->everySecond);
-        Application::$app->response->setHeader("X-Rate-Limit-Reset",$this->blockStillWaiting);
+        if($this->allowDisplayInHeader){
+            Application::$app->response->setHeader("X-Rate-Limit-Limit",$this->requestCount);
+            Application::$app->response->setHeader("X-Rate-Limit-Remaining",$this->everySecond);
+            Application::$app->response->setHeader("X-Rate-Limit-Reset",$this->blockStillWaiting);
+        }
+
     }
 }
