@@ -7,7 +7,7 @@
  **/
 
 
-namespace Alnazer\Easyapi\exceptions;
+namespace Alnazer\Easyapi\Exceptions;
 
 use RuntimeException;
 use Throwable;

@@ -15,7 +15,7 @@
 |
 */
 
-namespace Alnazer\Easyapi\database;
+namespace Alnazer\Easyapi\Database;
 
 interface UserInterface
 {

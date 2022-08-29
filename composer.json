@@ -8,7 +8,9 @@
             "Alnazer\\Easyapi\\": "src/",
             "app\\": "app/"
         },
-        "files": ["src/helpers/global.php"]
+        "files": [
+          "src/Helpers/global.php"
+        ]
     },
     "authors": [
         {
@@ -22,7 +24,6 @@
         "ext-simplexml": "*",
         "ext-libxml": "*",
         "ext-pdo": "*",
-        "ext-mbstring": "*",
-      "ext-password": "*"
+        "ext-mbstring": "*"
     }
 }

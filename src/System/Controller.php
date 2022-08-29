@@ -2,8 +2,8 @@
     
     namespace Alnazer\Easyapi\System;
     
-    use Alnazer\Easyapi\exceptions\BadActionCallException;
-    use Alnazer\Easyapi\exceptions\BadClassCallException;
+    use Alnazer\Easyapi\Exceptions\BadActionCallException;
+    use Alnazer\Easyapi\Exceptions\BadClassCallException;
 
     class Controller extends  Application
     {

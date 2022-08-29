@@ -15,11 +15,11 @@
 |
 */
 
-namespace Alnazer\Easyapi\behaviours\Auth;
+namespace Alnazer\Easyapi\Behaviours\Auth;
 
-use Alnazer\Easyapi\exceptions\AuthenticationException;
+use Alnazer\Easyapi\Exceptions\AuthenticationException;
 
-class MultiAuth extends Auth
+class MultiAuth extends AuthBehaviour
 {
 
     public function execute(): bool

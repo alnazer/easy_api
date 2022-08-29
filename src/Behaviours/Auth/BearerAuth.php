@@ -15,13 +15,13 @@
 |
 */
 
-namespace Alnazer\Easyapi\behaviours\Auth;
+namespace Alnazer\Easyapi\Behaviours\Auth;
 
 
-use Alnazer\Easyapi\exceptions\AuthenticationException;
+use Alnazer\Easyapi\Exceptions\AuthenticationException;
 use Alnazer\Easyapi\System\Application;
 
-class BearerAuth extends Auth
+class BearerAuth extends AuthBehaviour
 {
 
     public function execute(): bool
@@ -43,6 +43,7 @@ class BearerAuth extends Auth
     }
 
     private function getToken(){
+
         $header = request()->getHeader("Authorization");
         if (!empty($header)) {
             if (preg_match('/Bearer\s(\S+)/', $header, $matches)) {

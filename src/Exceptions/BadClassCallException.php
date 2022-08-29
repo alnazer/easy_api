@@ -1,6 +1,6 @@
 <?php
     
-    namespace Alnazer\Easyapi\exceptions;
+    namespace Alnazer\Easyapi\Exceptions;
     
     class BadClassCallException extends \Exception
     {

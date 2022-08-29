@@ -2,7 +2,7 @@
     
     namespace Alnazer\Easyapi\System;
     
-    use Alnazer\Easyapi\exceptions\BadRequestException;
+    use Alnazer\Easyapi\Exceptions\BadRequestException;
     use Alnazer\Easyapi\Exceptions\MethodNotAllowedException;
 
     /**

@@ -1,6 +1,6 @@
 <?php
     
-    namespace Alnazer\Easyapi\database;
+    namespace Alnazer\Easyapi\Database;
     
     use mysql_xdevapi\Exception;
 

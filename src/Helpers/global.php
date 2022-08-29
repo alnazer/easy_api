@@ -3,7 +3,7 @@
 use Alnazer\Easyapi\System\Application;
 use Alnazer\Easyapi\System\Response;
 use Alnazer\Easyapi\System\Request;
-use Alnazer\Easyapi\system\Security;
+use Alnazer\Easyapi\System\Security;
 
 function pd(...$data){
         echo json_encode($data);

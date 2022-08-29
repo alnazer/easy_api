@@ -1,9 +1,9 @@
 <?php
     
-    namespace Alnazer\Easyapi\helpers;
+    namespace Alnazer\Easyapi\Helpers;
     
-    use Alnazer\Easyapi\database\Query;
-    use Alnazer\Easyapi\database\Schema;
+    use Alnazer\Easyapi\Database\Query;
+    use Alnazer\Easyapi\Database\Schema;
     use Alnazer\Easyapi\System\Application;
 
     class Cache
@@ -27,6 +27,7 @@
             }
             $this->query = new Query();
             $this->query->tableName = $this->tableName;
+
         }
     
         /**
@@ -54,6 +55,7 @@
                 }
                 $get->where("expire", time(), ">=");
                 $result = $get->one();
+
                 if($result){
                     return unserialize($result['data']);
                 }
@@ -75,5 +77,10 @@
             // TODO: Implement __callStatic() method.
             $name = "_" . $name;
             return call_user_func_array([new static,$name],$arguments);
+        }
+
+        public function deleteAllExpired()
+        {
+            $this->query->delete(["expire","<",time()]);
         }
     }

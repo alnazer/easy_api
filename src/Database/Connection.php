@@ -1,8 +1,8 @@
 <?php
     
-    namespace Alnazer\Easyapi\database;
+    namespace Alnazer\Easyapi\Database;
     
-    use Alnazer\Easyapi\exceptions\DatabaseConnectionFailException;
+    use Alnazer\Easyapi\Exceptions\DatabaseConnectionFailException;
     use Alnazer\Easyapi\System\Configuration;
     use PDO;
 
@@ -63,7 +63,7 @@
         private function validDatabaseDefineInfo()
         {
             if(!$this->config){
-                throw new \Exception("You must define db connection in config file", 2002);
+                throw new \Exception("You must define db connection in Config file", 2002);
             }
         }
 

@@ -15,7 +15,7 @@
 |
 */
 
-namespace Alnazer\Easyapi\system;
+namespace Alnazer\Easyapi\System;
 
 abstract class  Events
 {

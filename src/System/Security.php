@@ -1,6 +1,6 @@
 <?php
     
-    namespace Alnazer\Easyapi\system;
+    namespace Alnazer\Easyapi\System;
     
     class Security
     {

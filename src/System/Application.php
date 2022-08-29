@@ -2,8 +2,8 @@
     
     namespace Alnazer\Easyapi\System;
     
-    use Alnazer\Easyapi\database\Connection;
-    use Alnazer\Easyapi\exceptions\BadRequestException;
+    use Alnazer\Easyapi\Database\Connection;
+    use Alnazer\Easyapi\Exceptions\BadRequestException;
     use http\Exception\RuntimeException;
 
     class Application extends Configuration

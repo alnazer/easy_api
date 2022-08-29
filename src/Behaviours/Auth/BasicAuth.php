@@ -15,13 +15,13 @@
 |
 */
 
-namespace Alnazer\Easyapi\behaviours\Auth;
+namespace Alnazer\Easyapi\Behaviours\Auth;
 
-use Alnazer\Easyapi\exceptions\AuthenticationException;
+use Alnazer\Easyapi\Exceptions\AuthenticationException;
 use Alnazer\Easyapi\System\Application;
 
 
-class BasicAuth extends Auth
+class BasicAuth extends AuthBehaviour
 {
 
     public function execute()

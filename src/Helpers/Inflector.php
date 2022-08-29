@@ -1,6 +1,6 @@
 <?php
     
-    namespace Alnazer\Easyapi\helpers;
+    namespace Alnazer\Easyapi\Helpers;
 
     class Inflector
     {

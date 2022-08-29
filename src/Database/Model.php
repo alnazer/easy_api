@@ -1,9 +1,9 @@
 <?php
     
-    namespace Alnazer\Easyapi\database;
+    namespace Alnazer\Easyapi\Database;
     
-    use Alnazer\Easyapi\exceptions\DatabaseQueryErrorException;
-    use Alnazer\Easyapi\helpers\Inflector;
+    use Alnazer\Easyapi\Exceptions\DatabaseQueryErrorException;
+    use Alnazer\Easyapi\Helpers\Inflector;
     use Alnazer\Easyapi\System\Application;
     use mysql_xdevapi\Exception;
 
@@ -26,6 +26,16 @@
             "order",
             "group",
             "limit",
+        ];
+        private array $condition_marks = [
+            "=",
+            ">",
+            "<",
+            ">=",
+            "<=",
+            "<>",
+            "!=",
+            "like",
         ];
 
         /**
@@ -77,19 +87,27 @@
             return $this;
         }
         
-        public function _where($firstValue = "", $sendValue = "", $symbol = "=")
+        public function _where($firstValue = "", $mark = "=", $sendValue = "")
         {
-            $condations = [];
+
 
             if(is_string($firstValue) && !empty($sendValue)){
-                $this->setWhere($firstValue, $sendValue, $symbol);
-            }
+                $this->setWhere($firstValue, $sendValue, $mark);
+            }elseif(is_string($firstValue) && empty($sendValue) && !empty($mark) && !in_array(strtolower($mark),$this->condition_marks)){
+                $this->setWhere($firstValue, $mark, "=");
+            }else{
+                if (is_array($firstValue) && count($firstValue) > 0) {
+                    if(count($firstValue) == 3){
+                        $this->setWhere($firstValue[0], $firstValue[2], $firstValue[1]);
+                    }else{
+                        foreach ($firstValue as $column => $condition) {
+                            $this->setWhere($column, $condition, $mark);
+                        }
+                    }
 
-            if (is_array($firstValue) && count($firstValue) > 0) {
-                foreach ($firstValue as $column => $condation) {
-                    $this->setWhere($column, $condation, $symbol);
                 }
             }
+
             return $this;
         }
         public function _whereIn($column,$value)
@@ -126,11 +144,11 @@
                     $this->where .= "`$column`".$item['symbol']." (".join(",",$item["condition"]).") AND ";
                     unset($this->execute[$column]);
                 }else{
-                    $this->where .= "`$column` ".$item['symbol']." :".$item['column']." AND ";
+                    $this->where .= "`$column`".$item['symbol'].":".$item['column']." AND ";
                     $this->execute[$column] = $item["condition"];
                 }
             }
-
+           // pd($this->execute);
             $this->where = rtrim($this->where, "AND ");
         }
         public function _order($column = null, $sort = "ASC")
@@ -151,7 +169,7 @@
             return $this;
         }
         
-        public function _limit($limit = 1)
+        public function _limit($limit = 20)
         {
             $this->limit = " LIMIT $limit";
             return $this;
@@ -180,8 +198,8 @@
         public function _last()
         {
             try {
+                $this->limit(1);
                 $this->order(null, "DESC");
-
                 return $this->excute()->prepare->fetch();
             } catch (\Exception $e) {
                 throw  new DatabaseQueryErrorException($e->getMessage(), $e->getCode());
@@ -191,6 +209,7 @@
         public function _first()
         {
             try {
+                $this->limit(1);
                 return $this->excute()->prepare->fetch();
             } catch (\Exception $e) {
                 throw  new DatabaseQueryErrorException($e->getMessage(), $e->getCode());
@@ -200,6 +219,7 @@
         public function _one()
         {
             try {
+                $this->limit(1);
                 return $this->excute()->prepare->fetch();
             } catch (\Exception $e) {
                 throw  new DatabaseQueryErrorException($e->getMessage(), $e->getCode());
@@ -274,23 +294,21 @@
 
         }
 
-        public function _update($data, $conditions = [])
+        public function _update($data = [], $conditions = [])
         {
             try {
-                $set = "";
-                $this->execute = [];
-                foreach ($data as $key => $value) {
-                    $set.= " `$key` = :$key , ";
-                    $this->execute[$key] = $value;
+                $_set = [];
+                $SET = " SET ";
+                foreach ($data as $key => $item) {
+                    $_set[]="`$key`=:$key";
                 }
-                $set = rtrim($set, ", ");
-                if(count($conditions) > 0){
-                    $this->_where($conditions);
+                $SET.=join(", ",$_set);
+                if($conditions){
+                    $this->where($conditions);
                 }
-                $query = "UPDATE `$this->tableName` SET $set ".$this->where;
-
-                $this->excute($query);
-                return true;
+                $sql = "UPDATE `$this->tableName` $SET ".$this->where;
+                $this->execute = array_merge($data,$conditions);
+                return $this->excute($sql);
             } catch (\PDOException  $e) {
                 throw new DatabaseQueryErrorException($e->getMessage(), (int)$e->getCode());
             }
@@ -305,6 +323,7 @@
                 if(count($conditions) > 0){
                     $this->_where($conditions);
                 }
+                $this->formatWhere();
                 $query = "DELETE FROM `$this->tableName` ".$this->where;
                 $this->excute($query);
                 return true;
@@ -320,8 +339,10 @@
 
         private function excute($query = null)
         {
+
             $query = (!$query) ? $this->query()->query : $query;
             $this->prepare = Application::$app->db->prepare($query);
+
             $this->prepare->execute($this->execute);
             return $this;
         }
@@ -356,4 +377,5 @@
             $name = "_" . $name;
             return call_user_func_array([new static,$name],$arguments);
         }
+
     }

@@ -15,9 +15,9 @@
 |
 */
 
-namespace Alnazer\Easyapi\behaviours\Auth;
+namespace Alnazer\Easyapi\Behaviours;
 
-interface AuthInterface
+interface BehaviourInterface
 {
     public function execute();
 }
