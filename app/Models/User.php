@@ -43,7 +43,7 @@
         {
             return "username";
         }
-    
+
         public function requestCount(): int
         {
             // TODO: Implement requestCount() method.

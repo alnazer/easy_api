@@ -24,6 +24,9 @@
         "ext-simplexml": "*",
         "ext-libxml": "*",
         "ext-pdo": "*",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+      "ext-csprng": "*",
+      "ext-mcrypt": "*",
+      "ext-openssl": "*"
     }
 }

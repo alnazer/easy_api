@@ -43,6 +43,7 @@ class RateLimit implements BehaviourInterface
         $this->schema = new Schema();
         $this->schema->db =Application::$app->db;
         $tableExists = $this->schema->isTableExist($this->tableName);
+
         if($tableExists === false){
             $query = "CREATE TABLE IF NOT EXISTS $this->tableName(
                     id int( 11 )  PRIMARY KEY auto_increment,
@@ -51,6 +52,7 @@ class RateLimit implements BehaviourInterface
                     request_time int(11) NOT NULL,
                     block_time int(11) NULL,
                     attempts int(11) NOT NULL);";
+
             $this->schema->createTable($this->tableName,$query);
         }
         $this->query = new Query();

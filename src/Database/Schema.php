@@ -22,7 +22,6 @@
     
         public function createTable($tableName, $query)
         {
-            
                 try {
                     if(is_string($query)){
                         $this->db->exec($query);

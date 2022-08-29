@@ -7,16 +7,15 @@
     class Security
     {
         public string $encrypt_algo = "aes-256-cbc-hmac-sha1";
-        private string $tag = "easy_api";
+
         /**
-         * @param $input
          * @return void
          * @throws Exception
          */
-        public function validSecurityKey()
+        private function validSecurityKey()
         {
             if(!Application::$app->security_key){
-                throw new Exception('Config parameter (security_key) must be define',30);
+                throw new Exception('Config parameter (security_key) must be define in app/Config/config.php file',30);
             }
         }
 
@@ -79,6 +78,7 @@
             if (function_exists('openssl_random_pseudo_bytes')) {
                 return bin2hex(openssl_random_pseudo_bytes($length));
             }
+            return $this->generateRandomString($length);
         }
         public function generateRandomString($length = 10 ,$schema = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") {
             return substr(str_shuffle(str_repeat($x=$schema, ceil($length/strlen($x)) )),1,$length);
@@ -94,8 +94,8 @@
             if (in_array($this->encrypt_algo, openssl_get_cipher_methods())) {
                 $iv_length = openssl_cipher_iv_length($cipher= $this->encrypt_algo);
                 $iv = openssl_random_pseudo_bytes($iv_length);
-                $ciphertext_raw = openssl_encrypt($text, $cipher, Application::$app->security_key, $options=OPENSSL_RAW_DATA, $iv);
-                $hmac = hash_hmac('sha256', $ciphertext_raw, Application::$app->security_key, $as_binary=true);
+                $ciphertext_raw = openssl_encrypt($text, $cipher, Application::$app->security_key, OPENSSL_RAW_DATA, $iv);
+                $hmac = hash_hmac('sha256', $ciphertext_raw, Application::$app->security_key, true);
                 return base64_encode( $iv.$hmac.$ciphertext_raw );
             }else{
                 throw new Exception("cipher methods not found");
@@ -115,8 +115,8 @@
                 $iv = substr($c, 0, $iv_length);
                 $hmac = substr($c, $iv_length, $sha2len=32);
                 $ciphertext_raw = substr($c, $iv_length+$sha2len);
-                $original_plaintext = openssl_decrypt($ciphertext_raw, $cipher, Application::$app->security_key, $options=OPENSSL_RAW_DATA, $iv);
-                $calcium = hash_hmac('sha256', $ciphertext_raw, Application::$app->security_key, $as_binary=true);
+                $original_plaintext = openssl_decrypt($ciphertext_raw, $cipher, Application::$app->security_key, OPENSSL_RAW_DATA, $iv);
+                $calcium = hash_hmac('sha256', $ciphertext_raw, Application::$app->security_key, true);
                 if (hash_equals($hmac, $calcium))// timing attack safe comparison
                 {
                     return $original_plaintext;

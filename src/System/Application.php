@@ -50,11 +50,13 @@
             self::$app->config = $config;
             self::$app->db = new Connection($config['db'] ?? []);
             self::$app->db = self::$app->db->connect();
+
             $this->handelConfig();
 
             if(!$this->security_key){
-                throw new \Exception('Config parameter (security_key) must be define',30);
+                throw new \Exception('Config parameter (security_key) must be define in app/Config/config.php file',30);
             }
+            self::$app->security_key = $this->security_key;
         }
 
         public function handelConfig()
@@ -62,7 +64,6 @@
             if($this->config){
                 foreach ($this->config as $var => $value){
                     $this->$var = $value;
-                    self::$app->$var = $value;
                 }
             }
 

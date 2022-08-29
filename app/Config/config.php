@@ -3,7 +3,7 @@ require_once "endpoint.php";
 require_once "events.php";
 $config = [
     "namespace" => "app",
-    "security_key" => "wrwrwrwrwrwrw",
+    "security_key" => "qqeqweqwe@#!#$!$%\$Q4",
     "auth"  =>[
         "class" => \app\Models\User::class,
     ],
