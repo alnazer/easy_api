@@ -5,6 +5,8 @@
     use Alnazer\Easyapi\Behaviours\Auth\BearerAuth;
     use Alnazer\Easyapi\Behaviours\Auth\MultiAuth;
     use Alnazer\Easyapi\Behaviours\RateLimit\RateLimit;
+    use Alnazer\Easyapi\Database\MigrateBuilder;
+    use Alnazer\Easyapi\Database\Schema;
     use Alnazer\Easyapi\System\Controller;
     use app\Models\User;
 
@@ -35,6 +37,14 @@
          */
         public function encrypt()
         {
+
+            return[ (Schema::createTable("asd",function (MigrateBuilder $table){
+                $table->tinyInt("id")->notNull()->auto_increment();
+                $table->string("username")->null()->default(0);
+                $table->string("id")->notNull();
+                $table->primary(["id"]);
+            }))];
+            /*
             $text = "My name Is Hassan";
             $encrypt = $this->security->encrypt($text);
             $string = "Ex0WnGAnbeg39wU9FAf0k3LyO910wbN/riiSviRu7qzJg8hVnfa+h6Z9TH4GOX12nrb9s+G2xgwtyeJbuNdtGtRPolUVr97E4aahrmxC/9k";
@@ -44,6 +54,7 @@
                 "decrypt_after_change_key" => $this->security->decrypt($string),
                 "random" => security()->generateRandomString(14,"0123456789")."-".security()->getRandomToken(4),
             ];
+            */
         }
         public function register(){
 

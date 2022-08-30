@@ -40,9 +40,9 @@ class RateLimit implements BehaviourInterface
     public function __construct()
     {
         // create table is not exist
-        $this->schema = new Schema();
-        $this->schema->db =Application::$app->db;
-        $tableExists = $this->schema->isTableExist($this->tableName);
+
+
+        $tableExists = Schema::isTableExist($this->tableName);
 
         if($tableExists === false){
             $query = "CREATE TABLE IF NOT EXISTS $this->tableName(
@@ -53,7 +53,7 @@ class RateLimit implements BehaviourInterface
                     block_time int(11) NULL,
                     attempts int(11) NOT NULL);";
 
-            $this->schema->createTable($this->tableName,$query);
+            Schema::createTable($this->tableName,$query);
         }
         $this->query = new Query();
         $this->query->tableName = $this->tableName;
