@@ -26,7 +26,6 @@ use Exception;
 class RateLimit implements BehaviourInterface
 {
     public string $tableName = "rate_limiting";
-    public Query $query;
     public Schema $schema;
     public int $requestCount = 3;
     public int $everySecond = 5;
@@ -55,8 +54,8 @@ class RateLimit implements BehaviourInterface
 
             Schema::createTable($this->tableName,$query);
         }
-        $this->query = new Query();
-        $this->query->tableName = $this->tableName;
+
+        Query::$tableName = $this->tableName;
     
         $this->blockStillWaiting = ($this->blockStillWaiting > 0) ?  $this->blockStillWaiting : $this->blockSecond;
     }
@@ -68,7 +67,7 @@ class RateLimit implements BehaviourInterface
     {
         
         if(Application::$app->auth){
-            $exist = $this->query->where(["user_id" => Application::$app->auth->user()->id])->first();
+            $exist = Query::where(["user_id" => Application::$app->auth->user()->id])->first();
             if($exist){
                 $this->stopIsRateLimiter($exist);
             }else{

@@ -9,7 +9,7 @@
     class User extends Model implements UserInterface,UserRateLimitInterface
     {
         public static $user;
-        
+        public static  string $tableName = "users";
         public static function findIdentityByAccessToken($token = null)
         {
             // TODO: Implement findIdentityByAccessToken() method.
