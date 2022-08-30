@@ -3,27 +3,24 @@
     namespace app\Models;
     
     use Alnazer\Easyapi\Behaviours\RateLimit\UserRateLimitInterface;
-    use Alnazer\Easyapi\Database\Model;
     use Alnazer\Easyapi\Database\UserInterface;
+    use Illuminate\Database\Eloquent\Model;
+
 
     class User extends Model implements UserInterface,UserRateLimitInterface
     {
         public static $user;
-        public static  string $tableName = "users";
+        public  $table = "users";
         public static function findIdentityByAccessToken($token = null)
         {
-            // TODO: Implement findIdentityByAccessToken() method.
-             //self::$user = ;
-            self::$user = self::where(["access_token"=> $token])->one();
-            return new static(self::$user);
+            return User::where(["access_token"=> $token])->get();
         }
 
-        public static function findIdentityByUsernamePassword($username, $password)
+      
+        public static function findIdentityByUsername($username)
         {
-            self::$user = self::where([self::usernameFiled() => $username,"password" => self::hashPassword($password)])->one();
-            return new static(self::$user);
+            return User::where([self::usernameFiled() => $username])->first();
         }
-
         public static function hashPassword($password): string
         {
             // TODO: Implement hashPassword() method.
@@ -35,8 +32,8 @@
         }
         public static function login($username, $password)
         {
-            self::$user = self::findIdentityByUsernamePassword($username, $password);
-            return new static(self::$user);
+            $user =  User::findIdentityByUsername($username);
+            return ($user && self::verifyPassword($password, $user->password)) ? $user : false;
         }
 
         public static function usernameFiled(): string
@@ -56,8 +53,5 @@
             return 10;
         }
     
-        public function user()
-        {
-            return (object) self::$user;
-        }
+
     }

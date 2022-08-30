@@ -4,8 +4,10 @@
     
     use Alnazer\Easyapi\Exceptions\DatabaseConnectionFailException;
     use Alnazer\Easyapi\System\Configuration;
-    use PDO;
-
+    use Illuminate\Database\Capsule\Manager as Capsule;
+    use Illuminate\Events\Dispatcher;
+    use Illuminate\Container\Container;
+    
     class Connection extends Configuration
     {
         private $config;
@@ -33,22 +35,28 @@
                 $db_name = $this->config["name"] ?? "";
                 $db_encode = $this->config["encode"] ?? "";
                 $port = $this->config["port"] ?? "";
-                $port = ($port)? "port=$port;" : "";
                 try {
-                    $this->db = new \PDO("mysql:host=$servername;dbname=$db_name;$port", $username, $password);
-                }catch (\PDOException $e){
-                    throw new DatabaseConnectionFailException($e->getMessage(), $e->getCode());
-                }
+                    $capsule = new Capsule;
+                    $capsule->addConnection([
+                        'driver' => 'mysql',
+                        'host' => $servername,
+                        'database' => $db_name,
+                        'username' => $username,
+                        'password' => $password,
+                        'charset' => $db_encode,
+                        'collation' => 'utf8_unicode_ci',
+                        'prefix' => '',
+                    ]);
+                    $capsule->setEventDispatcher(new Dispatcher(new Container));
 
-                // set the PDO error mode to exception
-                $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-                $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-                $this->db->setAttribute(PDO::MYSQL_ATTR_FOUND_ROWS ,true);
-                $this->db->setAttribute( PDO::ATTR_EMULATE_PREPARES, false );
-                
-                if(!empty($db_encode)){
-                    $this->db->setAttribute( PDO::MYSQL_ATTR_INIT_COMMAND, "SET NAMES $db_encode" );
+                    // Make this Capsule instance available globally via static methods... (optional)
+                    $capsule->setAsGlobal();
+
+                    // Setup the Eloquent ORM... (optional; unless you've used setEventDispatcher())
+                    $capsule->bootEloquent();
+                    return $this->db = $capsule;
+                }catch (\Exception $e){
+                    throw new DatabaseConnectionFailException($e->getMessage(), $e->getCode());
                 }
                 return $this->db;
             } catch(\PDOException $e) {

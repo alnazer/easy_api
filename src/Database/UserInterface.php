@@ -24,8 +24,8 @@ interface UserInterface
      */
 
     public static function findIdentityByAccessToken($token = null);
-
-    public static function findIdentityByUsernamePassword($username, $password);
+    
+    public static function findIdentityByUsername($username);
 
     public static function hashPassword($password);
 
@@ -34,7 +34,6 @@ interface UserInterface
     public static function login($username, $password);
 
     public static function usernameFiled();
-    
-    public function user();
+
 
 }

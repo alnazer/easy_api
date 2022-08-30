@@ -7,8 +7,10 @@
     use Alnazer\Easyapi\Behaviours\RateLimit\RateLimit;
     use Alnazer\Easyapi\Database\MigrateBuilder;
     use Alnazer\Easyapi\Database\Schema;
+    use Alnazer\Easyapi\System\Application;
     use Alnazer\Easyapi\System\Controller;
     use app\Models\User;
+    use Illuminate\Support\Facades\App;
 
     class SiteController extends Controller
     {
@@ -61,7 +63,7 @@
         }
         public function register(){
 
-            return  User::insert(["username"=> "admin".rand(1,20),"email"=> "hassan".rand(1,20)."@gmail.com","password"=> User::hashPassword("342342424234"),"access_token"=> security()->getRandomToken(50)]);
+            return  User::insert(["username"=> "admin200","email"=> "hassan".rand(1,20)."@gmail.com","password"=> User::hashPassword("342342424234"),"access_token"=> security()->getRandomToken(50)]);
         }
 
         /**
@@ -78,9 +80,10 @@
                "name" => $name,
                'mobile' => $mobile,
                //'get' => Cache::get("bc2a2917b4640a146f2fdcb9546b3d27c69b11df1e6c4e3c5aad3d46e5ce"),
-               //'findBy' => User::findById(3),
-               /*"all"=>User::select(["id ","username ","id "])->all(),
-               "all_selec"=>User::select("*")->whereIn("id",[1,2,3])->all(),
+               'user' => Application::$app->auth,
+               "all"=> User::select("id","username")->get(),
+               "login" => User::login("admin200", "342342424234"),
+               /*"all_selec"=>User::select("*")->whereIn("id",[1,2,3])->all(),
                "insert" => User::insert(["username"=> "admin".rand(1,20),"email"=> "hassan".rand(1,20)."@gmail.com","password"=> sha1(time()),"access_token"=>sha1(time()*time())]),
                "query"=>User::select("*")->where(["username"=> "admin","email"=> "hassan@gmail.com"])->all(),
                "queryCount"=>User::select("*")->where(["username"=> "admin","email"=> "hassan@gmail.com"])->count(),

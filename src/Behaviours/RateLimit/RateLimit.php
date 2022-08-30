@@ -18,7 +18,7 @@
 namespace Alnazer\Easyapi\Behaviours\RateLimit;
 
 use Alnazer\Easyapi\Behaviours\BehaviourInterface;
-use Alnazer\Easyapi\Database\Query;
+use Alnazer\Easyapi\Database\old\Query;
 use Alnazer\Easyapi\Database\Schema;
 use Alnazer\Easyapi\System\Application;
 use Exception;

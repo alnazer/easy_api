@@ -31,6 +31,7 @@ class BearerAuth extends AuthBehaviour
                 $user = Application::$app->config["auth"]['class']::findIdentityByAccessToken($this->getToken());
                 if($user){
                     Application::$app->auth = $user;
+            
                 }else{
                     throw  new AuthenticationException();
                 }

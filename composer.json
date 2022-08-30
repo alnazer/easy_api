@@ -25,8 +25,8 @@
         "ext-libxml": "*",
         "ext-pdo": "*",
         "ext-mbstring": "*",
-      "ext-csprng": "*",
-      "ext-mcrypt": "*",
-      "ext-openssl": "*"
+        "ext-openssl": "*",
+        "illuminate/database": "^8.83",
+        "illuminate/events": "^8.83"
     }
 }
