@@ -82,6 +82,10 @@
                 echo response()->returnResponse([
                     "code" => $e->getCode(),
                     "message" => $e->getMessage(),
+                    "file" => $e->getFile(),
+                    "line"=> $e->getLine(),
+                     "trace"=> $e->getTrace(),
+                     "previous"=>$e->getPrevious(),
                 ]);
                 exit();
             }
